@@ -5,6 +5,9 @@ import json
 import urllib.parse
 import psutil
 from threading import Thread
+from rich.console import Console
+
+console = Console()
 
 # Sessions for login
 sessions = {}
@@ -22,7 +25,6 @@ def read_login(file="servers/login.txt"):
 
 class CustomHandler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
-        # Strip ".html" extension
         if self.path.endswith(".html"):
             self.path = self.path.replace(".html", "")
 
@@ -40,7 +42,6 @@ class CustomHandler(http.server.SimpleHTTPRequestHandler):
         elif self.path == "/admlogin":
             self.path = "/admlogin.html"
 
-        # API: server stats
         elif self.path.startswith("/api/stats"):
             stats = {
                 "cpu": f"{psutil.cpu_percent()}%",
@@ -90,15 +91,19 @@ class CustomHandler(http.server.SimpleHTTPRequestHandler):
         return False
 
 class WebServer:
-    def __init__(self, port=8080, directory="web_server"):
+    def __init__(self, port=8080, directory="servers/web_files"):
         self.port = port
-        self.directory = directory
+        self.directory = os.path.abspath(directory)
         self.httpd = None
         self.thread = None
         self.ftp_user = "admin"
         self.ftp_pass = "12345"
 
     def start(self):
+        if not os.path.exists(self.directory):
+            console.print(f"[red]❌ Web directory not found: {self.directory}[/red]")
+            return
+
         os.chdir(self.directory)
         handler = CustomHandler
         handler.extensions_map.update({
@@ -109,11 +114,12 @@ class WebServer:
         self.httpd.port = self.port
         self.httpd.ftp_user = self.ftp_user
         self.httpd.ftp_pass = self.ftp_pass
-        print(f"[WebServer] Running on port {self.port}")
+        console.print(f"[green]🌐 WebServer running on port {self.port}[/green]")
         self.httpd.serve_forever()
 
     def stop(self):
         if self.httpd:
-            print("[WebServer] Stopping...")
+            console.print("[yellow]⚠️ Stopping WebServer...[/yellow]")
             self.httpd.shutdown()
             self.httpd.server_close()
+            console.print("[red]🛑 WebServer stopped[/red]")
