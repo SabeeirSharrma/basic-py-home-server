@@ -1,0 +1,112 @@
+/* General reset */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f9f9f9;
+    color: #333;
+    transition: background 0.3s, color 0.3s;
+}
+
+/* Header */
+header {
+    background: #007acc;
+    color: white;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    margin: 0;
+}
+
+header button, header .logout {
+    background: white;
+    color: #007acc;
+    border: none;
+    padding: 8px 12px;
+    margin-left: 10px;
+    cursor: pointer;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+/* Main content */
+main {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+section {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Dark Mode */
+body.dark {
+    background: #1e1e1e;
+    color: #e0e0e0;
+}
+
+body.dark header {
+    background: #333;
+    color: #f1f1f1;
+}
+
+body.dark header button,
+body.dark header .logout {
+    background: #444;
+    color: #f1f1f1;
+}
+
+body.dark section {
+    background: #2b2b2b;
+    box-shadow: 0 2px 5px rgba(255,255,255,0.1);
+}
+
+/* Login Page */
+.login-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: #f0f0f0;
+}
+
+.login-box {
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+    width: 300px;
+}
+
+.login-box h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.login-box input {
+    width: 100%;
+    padding: 8px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.login-box button {
+    width: 100%;
+    padding: 10px;
+    background: #007acc;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}

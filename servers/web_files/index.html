@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Basic-py-home-server</title>
+  <style>
+    /* Reset default browser styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      color: #fff;
+      background: #2f3e46;
+    }
+
+    /* Navbar */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 50px;
+      background: #fff;
+      color: #333;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: bold;
+      color: #aaa;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: #333;
+      font-size: 16px;
+      transition: color 0.3s ease;
+    }
+
+    nav ul li a:hover {
+      color: #555;
+    }
+
+    /* Hero Section */
+    .hero {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      height: 90vh;
+      background: linear-gradient(rgba(47, 62, 70, 0.8), rgba(47, 62, 70, 0.8)),
+                  url('https://svgshare.com/i/17hN.svg') no-repeat center center/cover;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: 48px;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    .hero p {
+      font-size: 18px;
+      margin-bottom: 30px;
+      color: #ddd;
+    }
+
+    .hero button {
+      background: #e63946;
+      border: none;
+      padding: 12px 30px;
+      font-size: 16px;
+      font-weight: bold;
+      color: #fff;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: background 0.3s ease;
+    }
+
+    .hero button:hover {
+      background: #d62828;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <header>
+    <div class="logo">logo</div>
+    <nav>
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">admin panel</a></li>
+        <li><a href="#">github</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <h1>Basic-py-home-server</h1>
+    <p>Lets make something beautiful! read the docs here</p>
+    <button>READ DOCS</button>
+  </section>
+</body>
+</html>

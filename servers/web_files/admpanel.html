@@ -1,0 +1,41 @@
+  <!--ADMIN PANEL DO NOT EDIT-->
+  <!--EDITING MAY CAUSE BREAK IN STRUCTURE AS THIS DEPENDS ON DATA PROVIDED BY PYTHON FILE-->
+  <!-- EDIT ONLY IF YOU KNOW HOW TO LINK AND SUGGEST EDIT ON DISCORD (https://discord.gg/jTFPm92rS5)-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="/admpanel.css">
+    <script src="/admpanel.js" defer></script>
+</head>
+<body>
+    <header>
+        <h1>🚀 Home Server Admin Panel</h1>
+        <button id="theme-toggle">🌙 Dark Mode</button>
+    </header>
+
+    <main>
+        <section class="info">
+            <h2>📂 FTP Info</h2>
+            <p><strong>Username:</strong> <span id="ftp-user">loading...</span></p>
+            <p><strong>Password:</strong> <span id="ftp-pass">loading...</span></p>
+        </section>
+
+        <section class="stats">
+            <h2>📊 Server Stats</h2>
+            <p><strong>CPU Load:</strong> <span id="cpu">loading...</span>%</p>
+            <p><strong>RAM Usage:</strong> <span id="ram">loading...</span>%</p>
+            <p><strong>Download Speed:</strong> <span id="download">loading...</span></p>
+            <p><strong>Upload Speed:</strong> <span id="upload">loading...</span></p>
+        </section>
+
+        <section class="links">
+            <h2>🔗 Useful Links</h2>
+            <p><a href="https://github.com/sabplay/basic-py-home-server/tree/main" target="_blank">📦 GitHub Repository</a></p>
+            <p><a href="https://buymeacoffee.com/sabplay" target="_blank">☕ Donate</a></p>
+            <p><strong>Server:</strong> <span id="server-port">loading...</span></p>
+        </section>
+    </main>
+</body>
+</html>
