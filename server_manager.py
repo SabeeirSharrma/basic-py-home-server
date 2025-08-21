@@ -10,11 +10,12 @@ class ServerManager:
 
     def start_all(self):
         for server in self.servers:
-            thread = threading.Thread(target=server.start, daemon=True)
-            thread.start()
-            self.threads.append(thread)
+            t = threading.Thread(target=server.start, daemon=True)
+            t.start()
+            self.threads.append(t)
 
     def stop_all(self):
         for server in self.servers:
-            if hasattr(server, "stop"):
-                server.stop()
+            server.stop()
+        for t in self.threads:
+            t.join(timeout=1)

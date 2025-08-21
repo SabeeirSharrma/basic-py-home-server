@@ -1,173 +1,119 @@
+import http.server
+import socketserver
 import os
-import urllib.parse
-import http.cookies
-import random
-import string
 import json
-from http.server import HTTPServer, BaseHTTPRequestHandler
+import urllib.parse
 import psutil
+from threading import Thread
 
-# -------------------------
-# Load Admin Login (from login.txt)
-# -------------------------
-def load_login(file="servers/web_files/login.txt"):
+# Sessions for login
+sessions = {}
+SESSION_COOKIE = "ADMSESSION"
+
+def read_login(file="servers/login.txt"):
     creds = {"username": "admin", "password": "12345"}
     if os.path.exists(file):
         with open(file, "r") as f:
             for line in f:
                 if "=" in line:
-                    key, value = line.strip().split("=", 1)
-                    creds[key.strip()] = value.strip()
+                    k, v = line.strip().split("=", 1)
+                    creds[k.strip()] = v.strip()
     return creds
 
-# Active sessions
-sessions = {}
-
-# Global FTP credentials (updated from main.py)
-ftp_user = "admin"
-ftp_pass = "12345"
-
-def set_ftp_credentials(user, password):
-    """Update FTP credentials for API stats"""
-    global ftp_user, ftp_pass
-    ftp_user = user
-    ftp_pass = password
-
-
-class SimpleRequestHandler(BaseHTTPRequestHandler):
-    def _is_logged_in(self):
-        """Check if session cookie is valid"""
-        if "Cookie" in self.headers:
-            cookie = http.cookies.SimpleCookie(self.headers["Cookie"])
-            if "session_id" in cookie:
-                sid = cookie["session_id"].value
-                if sid in sessions:
-                    return True
-        return False
-
-    def _serve_file(self, path, content_type="text/html"):
-        """Serve static files from web_files"""
-        try:
-            with open(os.path.join("servers/web_files", path), "rb") as f:
-                self.send_response(200)
-                self.send_header("Content-type", content_type)
-                self.end_headers()
-                self.wfile.write(f.read())
-        except FileNotFoundError:
-            self.send_error(404, "File not found")
-
+class CustomHandler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
-        # -----------------
-        # Login page
-        # -----------------
-        if self.path in ["/admlogin", "/admlogin/"]:
-            return self._serve_file("admlogin.html")
+        # Strip ".html" extension
+        if self.path.endswith(".html"):
+            self.path = self.path.replace(".html", "")
 
-        # -----------------
-        # Logout
-        # -----------------
-        if self.path.startswith("/logout"):
-            sid = None
-            if "Cookie" in self.headers:
-                cookie = http.cookies.SimpleCookie(self.headers["Cookie"])
-                if "session_id" in cookie:
-                    sid = cookie["session_id"].value
-            if sid and sid in sessions:
-                del sessions[sid]
-
-            self.send_response(302)
-            self.send_header("Location", "/admlogin")
-            self.send_header("Set-Cookie", "session_id=deleted; Max-Age=0")
-            self.end_headers()
-            return
-
-        # -----------------
-        # Admin panel (protected)
-        # -----------------
-        if self.path in ["/admpanel", "/admpanel/"]:
-            if not self._is_logged_in():
+        if self.path == "/":
+            self.path = "/index.html"
+        elif self.path == "/index":
+            self.path = "/index.html"
+        elif self.path == "/admpanel":
+            if not self.is_authenticated():
                 self.send_response(302)
                 self.send_header("Location", "/admlogin")
                 self.end_headers()
                 return
-            return self._serve_file("admpanel.html")
+            self.path = "/admpanel.html"
+        elif self.path == "/admlogin":
+            self.path = "/admlogin.html"
 
-        # -----------------
-        # API Stats (protected)
-        # -----------------
-        if self.path == "/api/stats":
-            if not self._is_logged_in():
-                self.send_error(403, "Forbidden")
-                return
+        # API: server stats
+        elif self.path.startswith("/api/stats"):
             stats = {
-                "cpu": psutil.cpu_percent(interval=1),
-                "ram": psutil.virtual_memory().percent,
-                "download": f"{psutil.net_io_counters().bytes_recv / 1024:.2f} KB",
-                "upload": f"{psutil.net_io_counters().bytes_sent / 1024:.2f} KB",
-                "ftp_user": ftp_user,
-                "ftp_pass": ftp_pass if ftp_pass else "anonymous",
+                "cpu": f"{psutil.cpu_percent()}%",
+                "ram": f"{psutil.virtual_memory().used // (1024*1024)} MB / {psutil.virtual_memory().total // (1024*1024)} MB",
+                "download": f"{psutil.net_io_counters().bytes_recv // (1024*1024)} MB",
+                "upload": f"{psutil.net_io_counters().bytes_sent // (1024*1024)} MB",
+                "ftp_user": self.server.ftp_user,
+                "ftp_pass": self.server.ftp_pass,
+                "web_port": self.server.port,
             }
             self.send_response(200)
-            self.send_header("Content-type", "application/json")
+            self.send_header("Content-Type", "application/json")
             self.end_headers()
-            self.wfile.write(json.dumps(stats).encode("utf-8"))
+            self.wfile.write(json.dumps(stats).encode())
             return
 
-        # -----------------
-        # Static resources (CSS/JS)
-        # -----------------
-        if self.path.endswith(".css"):
-            return self._serve_file(self.path.lstrip("/"), "text/css")
-        if self.path.endswith(".js"):
-            return self._serve_file(self.path.lstrip("/"), "application/javascript")
-
-        # -----------------
-        # Default: index.html
-        # -----------------
-        if self.path in ["/", "/index"]:
-            return self._serve_file("index.html")
-
-        # 404 if nothing matched
-        self.send_error(404, "Unknown endpoint")
+        return http.server.SimpleHTTPRequestHandler.do_GET(self)
 
     def do_POST(self):
-        # -----------------
-        # Handle login form
-        # -----------------
-        if self.path == "/admlogin":
+        if self.path == "/login":
             length = int(self.headers.get("Content-Length", 0))
-            body = self.rfile.read(length).decode("utf-8")
-            params = urllib.parse.parse_qs(body)
+            data = urllib.parse.parse_qs(self.rfile.read(length).decode())
+            username = data.get("username", [""])[0]
+            password = data.get("password", [""])[0]
 
-            username = params.get("username", [""])[0]
-            password = params.get("password", [""])[0]
-
-            creds = load_login()
-
+            creds = read_login()
             if username == creds["username"] and password == creds["password"]:
-                # Generate new session
-                sid = "".join(random.choices(string.ascii_letters + string.digits, k=32))
-                sessions[sid] = username
-
+                session_id = os.urandom(16).hex()
+                sessions[session_id] = True
                 self.send_response(302)
                 self.send_header("Location", "/admpanel")
-                self.send_header("Set-Cookie", f"session_id={sid}; HttpOnly")
+                self.send_header("Set-Cookie", f"{SESSION_COOKIE}={session_id}; HttpOnly")
                 self.end_headers()
             else:
-                # Invalid login → back to login page
                 self.send_response(302)
-                self.send_header("Location", "/admlogin")
+                self.send_header("Location", "/admlogin?error=1")
                 self.end_headers()
         else:
-            self.send_error(501, "Unsupported method")
+            self.send_error(501, "Unsupported method (POST)")
+
+    def is_authenticated(self):
+        cookie = self.headers.get("Cookie", "")
+        for part in cookie.split(";"):
+            if SESSION_COOKIE in part:
+                session_id = part.strip().split("=", 1)[1]
+                return session_id in sessions
+        return False
 
 class WebServer:
-    def __init__(self, host="127.0.0.1", port=8080):
-        self.host = host
+    def __init__(self, port=8080, directory="web_server"):
         self.port = port
+        self.directory = directory
+        self.httpd = None
+        self.thread = None
+        self.ftp_user = "admin"
+        self.ftp_pass = "12345"
 
     def start(self):
-        server_address = (self.host, self.port)
-        httpd = HTTPServer(server_address, SimpleRequestHandler)
-        print(f"🌍 Web server running at http://{self.host}:{self.port}")
-        httpd.serve_forever()
+        os.chdir(self.directory)
+        handler = CustomHandler
+        handler.extensions_map.update({
+            ".js": "application/javascript",
+            ".css": "text/css",
+        })
+        self.httpd = socketserver.TCPServer(("", self.port), handler)
+        self.httpd.port = self.port
+        self.httpd.ftp_user = self.ftp_user
+        self.httpd.ftp_pass = self.ftp_pass
+        print(f"[WebServer] Running on port {self.port}")
+        self.httpd.serve_forever()
+
+    def stop(self):
+        if self.httpd:
+            print("[WebServer] Stopping...")
+            self.httpd.shutdown()
+            self.httpd.server_close()

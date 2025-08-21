@@ -16,22 +16,13 @@ async function fetchStats() {
         if (!res.ok) return;
         const data = await res.json();
 
-        // Update system stats
         document.getElementById("cpu").textContent = data.cpu;
         document.getElementById("ram").textContent = data.ram;
         document.getElementById("download").textContent = data.download;
         document.getElementById("upload").textContent = data.upload;
-
-        // FTP info (fallback to defaults if missing)
         document.getElementById("ftp-user").textContent = data.ftp_user || "admin";
         document.getElementById("ftp-pass").textContent = data.ftp_pass || "12345";
-
-        // Current server port (from backend or browser)
-        if (data.web_port) {
-            document.getElementById("server-port").textContent = data.web_port;
-        } else {
-            document.getElementById("server-port").textContent = window.location.port || "80";
-        }
+        document.getElementById("web-port").textContent = data.web_port || "8080";
     } catch (err) {
         console.error("Error fetching stats:", err);
     }
@@ -40,3 +31,28 @@ async function fetchStats() {
 // Refresh stats every 5 seconds
 setInterval(fetchStats, 5000);
 fetchStats();
+
+
+
+// ------------------------------
+// 🔥 Hot Reload Lite
+// ------------------------------
+let lastModified = null;
+
+async function checkForChanges() {
+    try {
+        const res = await fetch(window.location.pathname, { method: "HEAD" });
+        const modified = res.headers.get("last-modified");
+
+        if (lastModified && modified !== lastModified) {
+            console.log("🔄 Changes detected, reloading...");
+            window.location.reload(true);
+        }
+        lastModified = modified;
+    } catch (err) {
+        console.error("Hot reload check failed:", err);
+    }
+}
+
+// Check every 5 seconds for file updates
+setInterval(checkForChanges, 5000);
