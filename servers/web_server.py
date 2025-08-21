@@ -114,12 +114,22 @@ class WebServer:
         self.httpd.port = self.port
         self.httpd.ftp_user = self.ftp_user
         self.httpd.ftp_pass = self.ftp_pass
-        console.print(f"[green]🌐 WebServer running on port {self.port}[/green]")
-        self.httpd.serve_forever()
+
+        def serve():
+            console.print(f"[green]🌐 WebServer running on port {self.port}[/green]")
+            try:
+                self.httpd.serve_forever()
+            except Exception as e:
+                console.print(f"[red]❌ WebServer error: {e}[/red]")
+
+        self.thread = Thread(target=serve, daemon=True)
+        self.thread.start()
 
     def stop(self):
         if self.httpd:
             console.print("[yellow]⚠️ Stopping WebServer...[/yellow]")
             self.httpd.shutdown()
             self.httpd.server_close()
+            if self.thread:
+                self.thread.join(timeout=2)
             console.print("[red]🛑 WebServer stopped[/red]")
