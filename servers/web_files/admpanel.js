@@ -1,4 +1,5 @@
 // Theme toggle
+// Theme toggle
 const themeToggle = document.getElementById("theme-toggle");
 if (themeToggle) {
     themeToggle.addEventListener("click", () => {
@@ -22,7 +23,7 @@ async function fetchStats() {
         document.getElementById("upload").textContent = data.upload;
         document.getElementById("ftp-user").textContent = data.ftp_user || "admin";
         document.getElementById("ftp-pass").textContent = data.ftp_pass || "12345";
-        document.getElementById("web-port").textContent = data.web_port || "8080";
+        document.getElementById("web-port").textContent = data.web_port;
     } catch (err) {
         console.error("Error fetching stats:", err);
     }
@@ -31,6 +32,7 @@ async function fetchStats() {
 // Refresh stats every 5 seconds
 setInterval(fetchStats, 5000);
 fetchStats();
+
 
 
 

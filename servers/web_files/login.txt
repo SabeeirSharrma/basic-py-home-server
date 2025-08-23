@@ -1,2 +1,3 @@
-username=admin
-password=12345
+// the syntax to add logins to admin panel is {username}:{password}
+admin:12345
+test:test
