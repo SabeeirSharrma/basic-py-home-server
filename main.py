@@ -6,6 +6,7 @@ from servers.web_server import WebServer
 from servers.ftp_server import FTPServer, set_ftp_credentials, ftp_credentials
 
 console = Console()
+manager = ServerManager()
 
 def load_settings(file="settings.txt"):
     """Read settings.txt into a dictionary"""
@@ -66,8 +67,7 @@ def main():
             if cmd == "stop":
                 console.print("[cyan]Shutting down servers...[/cyan]")
                 manager.stop_all()
-                console.print("[red]🛑 Web server closed[/red]")
-                console.print("[yellow]🛑 FTP server closed[/yellow]")
+                console.print("[bold red]🛑 All servers closed. You can now exit safely.[/bold red]")
                 break
 
             elif cmd in ["help", "?"]:

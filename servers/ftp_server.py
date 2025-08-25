@@ -41,8 +41,8 @@ class FTPServer:
     def __init__(self, host="127.0.0.1", port=21):
         self.host = host
         self.port = port
-        self.server = None
-        self.thread = None
+        self.server: PyFTPServer | None = None
+        self.thread: threading.Thread | None = None
         self.running = False
 
     def start(self):
@@ -51,7 +51,9 @@ class FTPServer:
 
         authorizer = DummyAuthorizer()
         if ftp_credentials["password"]:
-            authorizer.add_user(ftp_credentials["user"], ftp_credentials["password"], ".", perm="elradfmw")
+            authorizer.add_user(
+                ftp_credentials["user"], ftp_credentials["password"], ".", perm="elradfmw"
+            )
         else:
             authorizer.add_anonymous(".", perm="elradfmw")
 
@@ -69,13 +71,14 @@ class FTPServer:
 
         self.thread = threading.Thread(target=serve, daemon=True)
         self.thread.start()
-        console.print(f"[green]📡 FTP server started at ftp://{self.host}:{self.port}[/green]")
-        
+        console.print(f"[green]📡 FTP server running at ftp://{self.host}:{self.port}[/green]")
+
     def stop(self):
-            try:
-                if self.server:
-                    self.server.close_all()   # correct call
-                    self.running = False
-                console.print("[yellow]🛑 FTP server closed[/yellow]")
-            except Exception as e:
-                console.print(f"[red]⚠ Failed to stop FTP server: {e}[/red]")
+        if not self.running:
+            return
+        try:
+            self.server.close_all()
+            self.running = False
+            console.print("[yellow]🛑 FTP server stopped[/yellow]")
+        except Exception as e:
+            console.print(f"[red]⚠ Failed to stop FTP server: {e}[/red]")
