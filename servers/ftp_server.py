@@ -1,4 +1,5 @@
 import threading
+import os
 from pyftpdlib.authorizers import DummyAuthorizer
 from pyftpdlib.handlers import FTPHandler
 from pyftpdlib.servers import FTPServer as PyFTPServer
@@ -38,9 +39,10 @@ def set_ftp_credentials(user, password, settings_file="settings.txt"):
 
 
 class FTPServer:
-    def __init__(self, host="127.0.0.1", port=21):
+    def __init__(self, host="127.0.0.1", port=21, root_dir="./servers/web_files"):
         self.host = host
         self.port = port
+        self.root_dir = os.path.abspath(root_dir)  # make sure it's absolute
         self.server: PyFTPServer | None = None
         self.thread: threading.Thread | None = None
         self.running = False
@@ -49,13 +51,20 @@ class FTPServer:
         if self.running:
             return
 
+        # ensure root dir exists
+        if not os.path.exists(self.root_dir):
+            os.makedirs(self.root_dir, exist_ok=True)
+
         authorizer = DummyAuthorizer()
         if ftp_credentials["password"]:
             authorizer.add_user(
-                ftp_credentials["user"], ftp_credentials["password"], ".", perm="elradfmw"
+                ftp_credentials["user"],
+                ftp_credentials["password"],
+                self.root_dir,         # ✅ serve ./servers/web_files
+                perm="elradfmw"
             )
         else:
-            authorizer.add_anonymous(".", perm="elradfmw")
+            authorizer.add_anonymous(self.root_dir, perm="elradfmw")
 
         handler = FTPHandler
         handler.authorizer = authorizer
@@ -72,6 +81,7 @@ class FTPServer:
         self.thread = threading.Thread(target=serve, daemon=True)
         self.thread.start()
         console.print(f"[green]📡 FTP server running at ftp://{self.host}:{self.port}[/green]")
+        console.print(f"[blue]📂 Root directory: {self.root_dir}[/blue]")
 
     def stop(self):
         if not self.running:
