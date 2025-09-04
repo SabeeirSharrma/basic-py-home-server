@@ -38,12 +38,22 @@ Perfect for learning, experimenting, or running a small home network project.
 
 ## CLI
 This program has a built-in **CLI** for various purposes:
+
+
   `stop`  - Stop all servers
+
+  
   `help / ?` - Show this help
+
+  
   `ftp edit -user={username} -pass={password}`
      → Change FTP credentials (use -pass=* to remove password)
+
+     
   `web set -port={PORT}`
      → Change the web server port dynamically
+
+     
   `admin set -port={PORT}`
      → Change the admin panel port dynamically
      
