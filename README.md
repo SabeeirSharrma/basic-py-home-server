@@ -40,46 +40,31 @@ Perfect for learning, experimenting, or running a small home network project.
 
 │── main.py # Entry point, starts all servers
 
-
 │── server_manager.py # Manages starting/stopping servers
-
 
 │── settings.txt # Config file for ports & credentials
 
-
 │── login.txt # (optional) For login auth (currently unused)
-
 
 │── admin_panel.py # Admin panel server
 
-
-
 ├── adminpanel/
-
 
 │ ├── admpanel.html # Admin dashboard
 
-
 │ ├── admpanel.css # Styles for panel
-
 
 │ ├── admpanel.js # Panel logic (refresh stats, theme toggle, etc.)
 
-
 ├── servers/
-
 
 │ ├── web_server.py # Web server (serves web_files)
 
-
 │ ├── ftp_server.py # FTP server
-
 
 │ └── web_files/ # Your hosted website
 
-
 │ ├── index.html
-
 
 │ └── ...
 
@@ -106,14 +91,14 @@ To create/add pages to your site go to `YOUR_DIR/basic-py-home-server/servers/we
    run `pip install rich psutil pyftpdlib flask livereload speedtest-cli` in cmd after Python (with pip) installation
 
    **Requirements:**
-     | Component| Min|
-     | -----------------|:---------------------------------------------:|
-     | CPU|AMD Ryzen 7 4800H or better (intel supported)|
-     | RAM|4GB DDR4 or better|
-     | OS| Windows 10 / comparable linux or better|
+  | Component| Min|
+  | -----------------|:-------------:|
+  | CPU|AMD Ryzen 7 4800H or better (intel supported)|
+  | RAM|4GB DDR4 or better|
+  | OS| Windows 10 / comparable linux or better|
 
 
-     Basically **most** mid-range server builds can handle this
+  Basically **most** mid-range server builds can handle this
    
 ---
 
