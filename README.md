@@ -106,11 +106,11 @@ To create/add pages to your site go to `YOUR_DIR/basic-py-home-server/servers/we
    run `pip install rich psutil pyftpdlib flask livereload speedtest-cli` in cmd after Python (with pip) installation
 
    **Requirements:**
-     | Component        | Min                                           |
+     | Component| Min|
      | -----------------|:---------------------------------------------:|
-     | CPU              | AMD Ryzen 7 4800H or better (intel supported) |
-     | RAM              | 4GB DDR4 or better                            |
-     | OS               | Windows 10 / comparable linux or better       |
+     | CPU|AMD Ryzen 7 4800H or better (intel supported)|
+     | RAM|4GB DDR4 or better|
+     | OS| Windows 10 / comparable linux or better|
 
 
      Basically **most** mid-range server builds can handle this
