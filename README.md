@@ -36,38 +36,6 @@ Perfect for learning, experimenting, or running a small home network project.
 
 ---
 
-## 📂 Project Structure
-
-│── main.py # Entry point, starts all servers
-
-│── server_manager.py # Manages starting/stopping servers
-
-│── settings.txt # Config file for ports & credentials
-
-│── login.txt # (optional) For login auth (currently unused)
-
-│── admin_panel.py # Admin panel server
-
-├── adminpanel/
-
-│ ├── admpanel.html # Admin dashboard
-
-│ ├── admpanel.css # Styles for panel
-
-│ ├── admpanel.js # Panel logic (refresh stats, theme toggle, etc.)
-
-├── servers/
-
-│ ├── web_server.py # Web server (serves web_files)
-
-│ ├── ftp_server.py # FTP server
-
-│ └── web_files/ # Your hosted website
-
-│ ├── index.html
-
-│ └── ...
-
 ## CLI
 This program has a built-in **CLI** for various purposes:
   `stop`  - Stop all servers
