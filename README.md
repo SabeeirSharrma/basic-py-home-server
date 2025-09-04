@@ -107,7 +107,7 @@ To create/add pages to your site go to `YOUR_DIR/basic-py-home-server/servers/we
 
    **Requirements:**
      | Component        | Min                                           |
-     | -------------    |:-------------:                                |
+     | -----------------|:---------------------------------------------:|
      | CPU              | AMD Ryzen 7 4800H or better (intel supported) |
      | RAM              | 4GB DDR4 or better                            |
      | OS               | Windows 10 / comparable linux or better       |
