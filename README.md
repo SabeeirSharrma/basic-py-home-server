@@ -3,7 +3,7 @@
 ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/SabeeirSharrma/Basic-py-home-server/main)
 ![GitHub forks](https://img.shields.io/github/forks/SabeeirSharrma/Basic-py-home-server)
 ![GitHub Release](https://img.shields.io/github/v/release/SabeeirSharrma/basic-py-home-server)
-+
+
 
 A lightweight **home server** built with Python, providing:
 - 🌍 Static web hosting  
@@ -73,6 +73,21 @@ To create/add pages to your site go to `YOUR_DIR/basic-py-home-server/servers/we
 **Any HTML/CSS/JS file added will be hosted**
 **To use Tailwind simply link it to your HTML file**
 
+## Dependencies/Minimum Requirements
+   [Python 3.10+](https://python.org) 
+   lib: rich psutil pyftpdlib flask livereload speedtest-cli
+   run `pip install rich psutil pyftpdlib flask livereload speedtest-cli` in cmd after Python (with pip) installation
+
+   **Requirements:**
+     | Component        | Min           |
+     | -------------    |:-------------:|
+     | CPU              | AMD Ryzen 7 4800H or better (intel supported) |
+     | RAM              | 4GB DDR4 or better                            |
+     | OS               | Windows 10 / comparable linux or better       |
+
+
+     Basically **most** mid-range server builds can handle this
+   
 ---
 
 ## ⚙️ Installation
